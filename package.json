@@ -1,0 +1,56 @@
+{
+  "name": "n8n-nodes-etsy",
+  "version": "0.3.0",
+  "description": "A custom n8n node package for Etsy integration via a custom APP",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n-nodes-etsy",
+    "etsy"
+  ],
+  "license": "MIT",
+  "homepage": "https://alexeyrom.com",
+  "author": {
+    "name": "Alexey Romashkov",
+    "email": "alexey@starkambition.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/n8n-nodes-etsy.git"
+  },
+  "engines": {
+    "node": ">=18.10"
+  },
+  "packageManager": "pnpm@9.1.4",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && gulp build:icons",
+    "dev": "tsc --watch",
+    "format": "prettier nodes credentials --write",
+    "lint": "eslint nodes credentials package.json",
+    "lintfix": "eslint nodes credentials package.json --fix",
+    "prepublishOnly": "pnpm build && pnpm lint nodes credentials package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/EtsyOAuth2Api.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/etsy/Etsy.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^18.10.0",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.1",
+    "gulp": "^5.0.0",
+    "n8n-workflow": "^1.0.0",
+    "prettier": "^3.3.2",
+    "typescript": "^5.5.3"
+  }
+}
