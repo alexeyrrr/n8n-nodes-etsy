@@ -59,38 +59,23 @@ export class EtsyOAuth2Api implements ICredentialType {
 	];
 
 	oauth2 = {
-		authorizeUrl: 'https://www.etsy.com/oauth/connect',
-		tokenUrl: 'https://api.etsy.com/v3/public/oauth/token',
-		pkce: 'S256', // Matches "code_challenge_method=S256" in Step 1
+		authorizationUrl: 'https://www.etsy.com/oauth/connect',
+		accessTokenUrl: 'https://api.etsy.com/v3/public/oauth/token',
+		pkce: true,
+		scopeSeparator: ' ',
 
+		// This fixes the Callback Error
+		// It sends the combined key during the background token exchange
 		headers: {
-			'x-api-key': '={{ `${$credentials.clientId.trim()}:${$credentials.clientSecret.trim()}` }}',
-			//'x-api-key': '={{$credentials.clientId.trim() + ":" + $credentials.clientSecret.trim()}}',
+			'x-api-key': '={{$credentials.clientId.trim() + ":" + $credentials.clientSecret.trim()}}',
 			'Content-Type': 'application/x-www-form-urlencoded',
 		},
 
-		// Strictly matching the Step 3 table (POST body)
+		// Step 3 (Token Exchange) Body
 		body: {
 			grant_type: 'authorization_code',
-			//client_id: '={{$credentials.clientId}}',
+			client_id: '={{$credentials.clientId}}',
 			redirect_uri: '={{$oauthCallbackUrl}}',
-			'Accept': 'application/x-www-form-urlencoded',
-		},
-
-		// Strictly matching the Refresh Token section
-		refreshAccessToken: {
-			method: 'POST',
-			url: 'https://api.etsy.com/v3/public/oauth/token',
-			headers: {
-				'x-api-key': '={{ `${$credentials.clientId.trim()}:${$credentials.clientSecret.trim()}` }}',
-				//'x-api-key': '={{ $credentials.clientId + ":" + $credentials.clientSecret }}',
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
-			body: {
-				grant_type: 'refresh_token',
-				//client_id: '={{$credentials.clientId}}',
-				refresh_token: '={{$oauth2.refreshToken}}',
-			},
 		},
 	} as any;
 
@@ -98,14 +83,14 @@ export class EtsyOAuth2Api implements ICredentialType {
 		type: 'generic' as const,
 		properties: {
 			headers: {
-				// The "keystring" must be sent as x-api-key for all resource calls
-				'x-api-key': '={{ `${$credentials.clientId.trim()}:${$credentials.clientSecret.trim()}` }}',
-				//'x-api-key': '={{ $credentials.clientId + ":" + $credentials.clientSecret }}',
-				'Authorization': '={{"Bearer " + $oauth2.accessToken}}',
-				'Accept': 'application/json'
+				// This satisfies the new App Identification requirement
+				// format: 'keystring:secret'
+				'x-api-key': '={{ $credentials.clientId.trim() + ":" + $credentials.clientSecret.trim() }}',
 			},
 		},
 	};
+
+
 }
 
 
