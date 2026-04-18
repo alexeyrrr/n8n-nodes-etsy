@@ -52,5 +52,8 @@
     "n8n-workflow": "^1.0.0",
     "prettier": "^3.3.2",
     "typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "sqlite3": "^6.0.1"
   }
 }
