@@ -1,5 +1,6 @@
-// Etsy.node.ts
 import { INodeType, INodeTypeDescription, IExecuteFunctions, IDataObject } from 'n8n-workflow';
+// ADDED: Import your wrapper
+import { etsyApiRequest } from './EtsyApiRequest';
 
 export class Etsy implements INodeType {
     description: INodeTypeDescription = {
@@ -55,16 +56,8 @@ export class Etsy implements INodeType {
                 let responseData;
 
                 if (resource === 'user' && operation === 'getMe') {
-                    // IMPORTANT: Use 'this.helpers.httpRequest' with 'authenticate: true'
-                    // This tells n8n to look at the 'authenticate' block in your EtsyOAuth2Api.credentials.ts
-                    const options = {
-                        method: 'GET' as const,
-                        url: `https://api.etsy.com/v3/application/users/me`,
-                        authentication: 'etsyOAuth2Api', // Name must match the credential name
-                        json: true,
-                    };
-
-                    responseData = await this.helpers.httpRequest.call(this, options);
+                    // CHANGED: Use the wrapper instead of raw httpRequest
+                    responseData = await etsyApiRequest.call(this, 'GET', '/users/me');
                 }
 
                 returnData.push(responseData as IDataObject);
